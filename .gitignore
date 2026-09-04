@@ -1,0 +1,24 @@
+# Ignore game files and media (copyright protection)
+game/
+*.iso
+*.xex
+*.viv
+*.str
+*.vp6
+*.tg4d
+*.tg4h
+
+# Ignore runtime data and prefix
+prefix/
+fpslog/
+*.log
+proton/
+proton_tmp/
+
+# Ignore OS & editor files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
