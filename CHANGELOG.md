@@ -23,7 +23,7 @@ Esta versão marca a **conclusão da migração para Linux 100% Nativo (ELF / Vu
 #### Adicionado
 * **Hub do Desenvolvedor (`installer/linux/install.sh`)**:
   - Menu para desenvolvedores com 5 opções: `1 - Setup`, `2 - Build`, `3 - Package`, `4 - Clean`, `5 - Exit`.
-  - Opção `4 - Clean` para limpar cache de compilação, objetos `.o` (`out/`), código C++ gerado (`generated/default/`) e builds intermediários liberando ~1 GB em disco.
+  - Opção `4 - Clean` para limpar cache de compilação, objetos `.o` (`out/`), código C++ gerado (`generated/default/`) e builds intermediários liberando ~1 GB em disco, com opção integrada de apagar também os dados brutos extraídos em `game/` (~5.5 GB adicionais, preservando `README.md`) e re-extrair sob demanda via `--extract-iso` ou no próximo build.
   - Suporte a automação completa via CLI (`--setup`, `--build`, `--package`, `--clean`, `--cli`, `--gui`, `--help`).
   - Verificação de compiladores Clang 18+, Clang++, Ninja, CMake e bibliotecas de desenvolvimento (`qt6-base-dev`, `libvulkan-dev`, `libx11-dev`, `libwayland-client`).
 * **Ponto de Entrada do Usuário Final (`installer/linux/package_entrypoint.sh` / `launcher.sh` / `install.sh`)**:

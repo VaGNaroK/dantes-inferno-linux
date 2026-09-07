@@ -92,7 +92,7 @@ No repositório de código-fonte, o script [`installer/linux/install.sh`](instal
   1 - Setup    Configurar ambiente de desenvolvimento e dependências
   2 - Build    Compilar o port nativo Linux (ReXGlue + Clang + Ninja)
   3 - Package  Gerar o pacote de distribuição (dist-release/)
-  4 - Clean    Limpar cache de compilação e arquivos de build
+  4 - Clean    Limpar cache de compilação e dados brutos (game/)
   5 - Exit     Sair
 ```
 
@@ -114,13 +114,14 @@ No repositório de código-fonte, o script [`installer/linux/install.sh`](instal
    * Executa `scripts/package-linux-release.sh`.
    * Monta a estrutura autocontida com binários ELF, bibliotecas de runtime, utilitário `extract-xiso`, scripts dedicados ao jogador, ícones em alta resolução e documentação.
    * Produz o arquivo compactado `dist-release/DantesInferno-Linux-v<VERSÃO>.tar.gz` a partir da fonte única de versão (`launcher/DantesInfernoLauncher/version.txt`).
-4. **`🧹 4 - Clean: Limpar cache de compilação e arquivos de build`**
+4. **`🧹 4 - Clean: Limpar cache de compilação e dados brutos (game/)`**
    * Remove com segurança arquivos e diretórios intermediários de compilação gerados:
      - `out/` (árvore de build do CMake/Ninja, objetos `.o` ~800 MB).
      - `generated/default/` (arquivos C++ gerados pelo ReXGlue codegen ~120 MB).
      - `tools/extract-xiso-src/build/` (build intermediário do extrator).
      - Logs temporários de compilação em `~/.cache/dantes-inferno-dev/`.
-   * **Preserva 100% intactos** os pacotes prontos em `dist-release/`, arquivos de jogo em `game/` e saves.
+   * **Limpeza opcional de dados brutos (`game/`)**: Pergunta se o desenvolvedor deseja também apagar os arquivos brutos extraídos do jogo (`game/default.xex`, `game/bigfile0.viv`, `game/bigfile1.viv`, etc., liberando ~5.5 GB adicionais). O arquivo `game/README.md` é preservado. Sempre que for necessária uma nova compilação no futuro, basta utilizar a opção `2 - Build` (ou `--extract-iso`) para extrair a ISO novamente para a pasta `game/`.
+   * **Preserva 100% intactos** os pacotes prontos em `dist-release/` e saves do jogador.
 5. **`❌ 5 - Exit: Sair`**
 
 #### Automação via Linha de Comando (CLI Flags):
