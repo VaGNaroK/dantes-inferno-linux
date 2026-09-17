@@ -150,7 +150,7 @@ O jogador que baixa o arquivo `DantesInferno-Linux-v<VERSÃO>.tar.gz` não preci
        DANTE'S INFERNO - LINUX
 ========================================
 1 - Configurar ambiente (Verificar Vulkan e dependências de execução)
-2 - Preparar port nativo (Criar atalhos na Área de Trabalho e Menu)
+2 - Criar atalhos no sistema (Área de Trabalho e Menu de Aplicativos)
 3 - Iniciar Launcher (Abrir central do jogo para ISO, Saves e Jogar)
 4 - Sair
 ```
@@ -160,10 +160,11 @@ O jogador que baixa o arquivo `DantesInferno-Linux-v<VERSÃO>.tar.gz` não preci
    * Verifica se a GPU suporta **Vulkan 1.2+** (drivers Mesa RADV para AMD, ANV para Intel ou driver proprietário NVIDIA).
    * Valida a presença de bibliotecas de execução básicas no sistema (como `libstdc++.so.6`, `libX11.so.6`, `libc.so.6`).
    * Informa de forma amigável os comandos do gerenciador de pacotes da distro caso falte algum driver gráfico, sem tentar compilar nada.
-2. **`🎮 2 - Preparar port nativo`**
-   * Permite instalar os arquivos em `~/.local/share/dantes-inferno` ou em uma pasta personalizada escolhida pelo jogador.
-   * Cria o atalho oficial com ícone no **Menu de Aplicativos** (`~/.local/share/applications/dantes-inferno.desktop`) com aspas protetoras (`Exec="${exec_target}"`) para suportar pastas com espaços e apóstrofos (ex: `~/Dante's Inferno PC PORT`).
+2. **`🎮 2 - Criar atalhos no sistema`**
+   * Vincula diretamente a pasta atual onde o jogador extraiu o pacote (sem copiar ou duplicar gigabytes de binários no disco).
+   * Cria o atalho oficial com ícone em alta resolução no **Menu de Aplicativos** (`~/.local/share/applications/dantes-inferno.desktop`) apontando para o Launcher do jogo.
    * Cria o atalho executável na **Área de Trabalho** do usuário (`xdg-user-dir DESKTOP`, como `~/Área de trabalho` ou `~/Desktop`) e aplica a confiança nativa no GNOME (`gio set metadata::trusted true`).
+   * Instala o ícone oficial em `~/.local/share/icons/hicolor/256x256/apps/dantes-inferno.png` para integração perfeita em docks e menus do Linux.
 3. **`🚀 3 - Iniciar Launcher`**
    * Executa o `dantes_inferno_launcher` em Qt6 com `LD_LIBRARY_PATH` configurado.
    * No Launcher, o jogador clica em **Import ISO** para selecionar sua imagem de disco original de Xbox 360 (`.iso`), ajusta suas preferências visuais e clica em **PLAY**.

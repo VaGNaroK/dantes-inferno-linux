@@ -5,7 +5,7 @@
 [![Binary](https://img.shields.io/badge/Format-ELF%2064--bit-blue.svg)]()
 [![Recomp](https://img.shields.io/badge/Recompilation-ReXGlue%20v0.10.0-purple.svg)]()
 [![Launcher](https://img.shields.io/badge/Launcher-Qt6%20Nativo-brightgreen.svg)]()
-[![Release](https://img.shields.io/badge/Release-v0.5.0--alpha-blue.svg)]()
+[![Release](https://img.shields.io/badge/Release-v0.6.6--beta-blue.svg)]()
 
 Este repositório disponibiliza documentação, histórico de versões, manuais técnicos e informações sobre as compilações nativas de **Dante's Inferno** (Xbox 360) para Linux e Steam Deck via **Vulkan Nativo**, através de recompilação estática antecipada (*Ahead-Of-Time* - AOT).
 
@@ -29,7 +29,8 @@ Este projeto é baseado no trabalho pioneiro de engenharia reversa do **[hells-g
 
 O objetivo deste repositório é documentar e centralizar informações sobre os pacotes compilados para que qualquer usuário de Linux ou Steam Deck possa desfrutar do jogo com desempenho máximo, sem precisar configurar ambientes complexos de desenvolvimento (Clang, Ninja, CMake ou SDKs).
 
-### Recursos da Edição Linux Nativa (v0.5.0-alpha):
+### Recursos da Edição Linux Nativa (v0.6.6-beta):
+* **Suporte Nativo a Expansões (DLCs)**: Detecção e montagem automática de pacotes STFS na pasta `dlc/` durante a inicialização (`OnPostSetup`), integrando conteúdos adicionais como *Dark Forest*.
 * **Executável ELF 64-bit nativo puro** (`bin/dantes_inferno`), traduzido de PowerPC para C++23 e compilado com Clang e Ninja (`-march=x86-64-v2`).
 * **Renderização Vulkan Nativa** via `librexgpu-xenos.so`, garantindo alto framerate sem overhead de tradução.
 * **Launcher Moderno em C++23 e Qt6** (`bin/dantes_inferno_launcher`):
@@ -41,9 +42,10 @@ O objetivo deste repositório é documentar e centralizar informações sobre os
 * **Ponto de Entrada Dedicado do Jogador (`launcher.sh` / `install.sh`)**:
   - Menu interativo (Zenity ou Terminal CLI).
   - Verificação de drivers Vulkan e bibliotecas de runtime.
-  - Criação de atalhos oficiais com ícone na **Área de Trabalho** (`xdg-user-dir DESKTOP`) e no **Menu de Aplicativos**.
+  - Criação de atalhos oficiais com ícone na **Área de Trabalho** (`xdg-user-dir DESKTOP`) e no **Menu de Aplicativos** sem duplicação de binários.
 * **Runner Direto (`run-linux.sh`)**:
   - Auto-detecção inteligente dos arquivos do jogo (`default.xex`) na pasta atual ou a partir de `launcher.ini`.
+  - Suporte a `--dlc_source_path` para carregamento imediato de expansões.
   - Herança automática das opções gráficas salvas no Launcher.
 * **Desinstalador Limpo e Seguro (`uninstall.sh`)**:
   - Remove executáveis e atalhos do sistema sem apagar os arquivos extraídos do jogo (~7 GB) ou saves, salvo se expressamente confirmado pelo usuário.
@@ -54,12 +56,12 @@ O objetivo deste repositório é documentar e centralizar informações sobre os
 
 ### Passo 1: Baixar a Versão Mais Recente
 Baixe o pacote pré-compilado na aba **[Releases](../../releases)**:
-* `DantesInferno-Linux-v0.5.0-alpha.tar.gz`
+* `DantesInferno-Linux-v0.6.6-beta.tar.gz`
 
 Extraia o arquivo:
 ```bash
-tar -xzf DantesInferno-Linux-v0.5.0-alpha.tar.gz
-cd DantesInferno-Linux-v0.5.0-alpha
+tar -xzf DantesInferno-Linux-v0.6.6-beta.tar.gz
+cd DantesInferno-Linux-v0.6.6-beta
 ```
 
 ---

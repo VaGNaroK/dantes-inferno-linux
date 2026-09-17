@@ -4,6 +4,16 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e este projeto segue o versionamento semântico.
 
+## [0.6.6-beta] — 2026-09-16
+
+Esta versão sincroniza o porte com o upstream oficial (`v0.6.6-beta`), adicionando **suporte nativo automático a DLCs**, blindagens essenciais contra crashes de boot e melhorias nos scripts de empacotamento e instalação.
+
+### 🚀 Destaques da Versão
+* **Auto-Instalação e Montagem de DLCs**: O motor detecta e instala pacotes STFS de DLCs colocados na pasta `dlc/` automaticamente em `OnPostSetup`.
+* **Resolução de Crash no Boot (`C0000001`)**: Removidos 7 entrypoints de Title Update (TU2) que estavam fora da faixa de endereços do `default.xex` base, e blindada a rejeição de stubs no ReXGlue SDK para emitir `REXSYS_WARN` em vez de abortar o jogo.
+* **Instalador Otimizado sem Duplicação**: A criação de atalhos pelo script do jogador agora referencia diretamente o diretório do usuário, sem copiar arquivos desnecessariamente para `~/.local/share`.
+* **Compatibilidade Clang 18 / C++23 e Vulkan**: Fallback limpo no CMake para o backend nativo Vulkan (`rexgpu-xenos.so`) e correções em cabeçalhos C++23 (`<expected>`).
+
 ---
 
 ## [0.5.0-alpha] — 2026-09-07
