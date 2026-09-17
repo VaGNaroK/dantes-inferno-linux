@@ -5,7 +5,7 @@
 [![Binary](https://img.shields.io/badge/Format-ELF%2064--bit-blue.svg)]()
 [![Recomp](https://img.shields.io/badge/Recompilation-ReXGlue%20v0.10.0-purple.svg)]()
 [![Launcher](https://img.shields.io/badge/Launcher-Qt6%20Nativo-brightgreen.svg)]()
-[![Release](https://img.shields.io/badge/Release-v0.6.6--beta-blue.svg)]()
+[![Release](https://img.shields.io/badge/Release-v0.7.2--beta--hotfix-blue.svg)]()
 
 Este repositório disponibiliza documentação, histórico de versões, manuais técnicos e informações sobre as compilações nativas de **Dante's Inferno** (Xbox 360) para Linux e Steam Deck via **Vulkan Nativo**, através de recompilação estática antecipada (*Ahead-Of-Time* - AOT).
 
@@ -29,7 +29,10 @@ Este projeto é baseado no trabalho pioneiro de engenharia reversa do **[hells-g
 
 O objetivo deste repositório é documentar e centralizar informações sobre os pacotes compilados para que qualquer usuário de Linux ou Steam Deck possa desfrutar do jogo com desempenho máximo, sem precisar configurar ambientes complexos de desenvolvimento (Clang, Ninja, CMake ou SDKs).
 
-### Recursos da Edição Linux Nativa (v0.6.6-beta):
+### Recursos da Edição Linux Nativa (v0.7.2-beta-hotfix):
+* **Zero Shader Stutter (Cache SPIR-V Vulkan Pré-Aquecido)**: Inclusão do pacote de shaders compilados (`shader_cache/`), semeados automaticamente no arranque em `SeedShaderStorage()`, eliminando travamentos de compilação gráfica durante a gameplay.
+* **Correção Definitiva de Proporção Ultrawide (21:9 Hor+)**: Gancho em `0x824D6B90` (`f0`) que intercepta o registrador antes do armazenamento da razão de aspecto na memória global do jogo, garantindo FOV, projeção e interface perfeitamente adaptados sem esticar.
+* **Pacing de VSync e Novo Overlay de FPS**: Apresentação sincronizada ao vblank do monitor e HUD redesenhado com cálculo por janela de 250ms e exibição da taxa do vblank em Hz.
 * **Suporte Nativo a Expansões (DLCs)**: Detecção e montagem automática de pacotes STFS na pasta `dlc/` durante a inicialização (`OnPostSetup`), integrando conteúdos adicionais como *Dark Forest*.
 * **Executável ELF 64-bit nativo puro** (`bin/dantes_inferno`), traduzido de PowerPC para C++23 e compilado com Clang e Ninja (`-march=x86-64-v2`).
 * **Renderização Vulkan Nativa** via `librexgpu-xenos.so`, garantindo alto framerate sem overhead de tradução.
@@ -56,12 +59,12 @@ O objetivo deste repositório é documentar e centralizar informações sobre os
 
 ### Passo 1: Baixar a Versão Mais Recente
 Baixe o pacote pré-compilado na aba **[Releases](../../releases)**:
-* `DantesInferno-Linux-v0.6.6-beta.tar.gz`
+* `DantesInferno-Linux-v0.7.2-beta-hotfix.tar.gz`
 
 Extraia o arquivo:
 ```bash
-tar -xzf DantesInferno-Linux-v0.6.6-beta.tar.gz
-cd DantesInferno-Linux-v0.6.6-beta
+tar -xzf DantesInferno-Linux-v0.7.2-beta-hotfix.tar.gz
+cd DantesInferno-Linux-v0.7.2-beta-hotfix
 ```
 
 ---

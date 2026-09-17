@@ -4,6 +4,18 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e este projeto segue o versionamento semântico.
 
+## [0.7.2-beta-hotfix] — 2026-09-16
+
+Esta versão incorpora as atualizações do upstream oficial (`v0.7.0-beta`, `v0.7.1-beta` e `v0.7.2-beta-hotfix`), trazendo **cache persistente de shaders SPIR-V pré-aquecidos**, **correção cirúrgica de Ultrawide Hor+**, **sincronização de VSync com vblank** e novo HUD de monitoramento de desempenho.
+
+### 🚀 Destaques da Versão
+* **Zero Shader Stutter (SPIR-V Vulkan Cache)**: Inclusão do pacote de shaders pré-compilados (`shader_cache/`), semeado automaticamente no arranque em `SeedShaderStorage()`, eliminando travamentos de compilação gráfica durante a gameplay.
+* **Correção Definitiva de Proporção Ultrawide**: Novo gancho em `0x824D6B90` (`f0`) que intercepta o registrador antes do armazenamento da razão de aspecto na memória global do jogo, garantindo FOV, projeção e interface 21:9 Hor+ sem distorção.
+* **Pacing de VSync e Novo Overlay de FPS**: Pacing sincronizado ao vblank do monitor e overlay ImGui redesenhado com cálculo por janela de 250ms e exibição da taxa em Hz do vblank.
+* **Preservação de Todas as Blindagens Linux**: Mantida a remoção de entrypoints TU2 inválidos no manifesto, tolerância a mapeamentos no runtime, fallback dinâmico para Vulkan nativo sem exigência de `DiligentCore` e compatibilidade C++23 no Clang 18.
+
+---
+
 ## [0.6.6-beta] — 2026-09-16
 
 Esta versão sincroniza o porte com o upstream oficial (`v0.6.6-beta`), adicionando **suporte nativo automático a DLCs**, blindagens essenciais contra crashes de boot e melhorias nos scripts de empacotamento e instalação.
