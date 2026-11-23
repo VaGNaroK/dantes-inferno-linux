@@ -4,6 +4,92 @@ Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) e este projeto segue o versionamento semântico.
 
+## [0.9.0-beta-linux] — 2026-11-23
+
+Marco principal do port nativo Linux x86_64: sincronizado com o projeto original (`florinp93/hells-gate-recomp`) até o commit **`3ce28ec`** (pós-`v0.8.6-beta-hotfix`) e com correções definitivas de vídeo (**Dante Renderer Vulkan**), áudio sem cortes no PipeWire/USB, **V-Sync estrito sem tearing**, **menu in-game de Cheats + Hold L3/R3 to Skip**, e empacotamento **AppImage x86_64** pronto para uso.
+
+### 📦 Base do Projeto Original (até o commit `3ce28ec`)
+* **Texture Studio & Mod Loader**: carregamento nativo de mods de textura no Dante Renderer e ferramenta para extração/edição de texturas.
+* **Glifos Kenney's Input Prompts**: 129 ícones PNG embutidos em tempo de compilação (PlayStation e Teclado/Mouse) sem depender de Win32/GDI.
+* **Ultrawide 16:9 Centralizado para Menus e HUD** e opção nativa **Quit to Desktop** no menu principal e de pausa.
+* **Otimizações de GPU/CPU/VRAM**: sleep no GPU fence (`81461c7`), redução de CPU/VRAM (`dff9962`), DynamicHeapSize Vulkan de 256 MB, sobrevivência a falhas de alocação de textura (`c28e606`), correções de animação (`animation_hooks.cpp`), `memory_hooks.cpp` e fallback/aviso para GPUs incompatíveis (`3ce28ec`).
+
+### ✨ Novas Modificações e Correções do Port Linux
+* **Renderizador Nativo Vulkan "Dante" 100% funcional no Linux (60 FPS cravados)**:
+  - Corrigido o cálculo de offset da faixa física `0xE0000000+` em `src/guest_memory.h` e `src/dantes_inferno_hooks.h` (`0` no Linux com páginas de 4 KB em vez de `+0x1000` do Windows), eliminando erros de tradução de shaders, tela rosa e travamento ao carregar saves.
+  - Suporte nativo a swapchain Vulkan em **X11 e Wayland** via propriedades do SDL3 (`src/renderer/vulkan_device.cpp` e `WindowSDL::GetNativeWindowHandle()`).
+  - Corrigido crash de inicialização no `SeedShaderStorage()` (movido para `OnPostSetup()` com proteção de ponteiro nulo).
+* **Áudio 100% Limpo no Linux (Zero Picotes / Estalos In-Game)**:
+  - Priorização automática do driver SDL3 `pulseaudio,pipewire,alsa` (`sdl_audio_driver.cpp`, `achievement_sound.cpp`, `AppRun`), eliminando *xruns* do callback RT do PipeWire em dispositivos USB sob carga 3D.
+  - Detecção real dos canais nativos do dispositivo antes de abrir o stream, usando o downmix estéreo interno ITU-R BS.775 (2ch) em vez de enviar 6ch virtuais ao PipeWire.
+  - Reconectadas todas as opções de áudio do launcher (`audio_force_stereo`, `audio_front_only`, `audio_output_gain`, `audio_highpass_hz`), sanitização de `NaN`/`Inf` e *de-clicker* suave.
+* **V-Sync Estrito (Zero Screen Tearing)**:
+  - `PresentTexture` em `src/renderer/renderer.cpp` agora respeita a opção `--vsync` do launcher.
+  - Patch no DiligentCore (`SwapChainVkImpl.cpp`) priorizando `VK_PRESENT_MODE_FIFO_KHR` estrito sobre `FIFO_RELAXED`, eliminando o *tearing* residual na borda inferior.
+* **Menu In-Game "Cheats" + Avanço Rápido Seguro de Cutscenes**:
+  - Nova entrada **"Cheats"** injetada diretamente no menu de pausa (Start) + atalho `F4`, abrindo um painel overlay temático (ouro/brasa) navegável por **controle, teclado e mouse** com congelamento completo do menu de pausa atrás (`xam_input_suppressed`).
+  - Cheats em tempo real: **God Mode**, **One-Hit Kill**, **Damage Multiplier** (`1.0x / 2.0x / 4.0x`), **Game Speed** (`0.5x / 1.0x / 1.5x / 2.0x`) e **Hold L3/R3 to Skip** (segurar o clique do analógico esquerdo `L3`, direito `R3` ou `Ctrl Direito` acelera cutscenes e FMVs em `20x` com áudio mutado e risco zero de *softlock*).
+* **Launcher Qt6 PT-BR & AppImage x86_64 Autocontido**:
+  - Janela do Launcher agora abre centralizada automaticamente no monitor ativo (`launcher-linux/main.cpp`).
+  - Nova aba **`SISTEMA`** com diagnóstico em tempo real, instalação 1-clique de drivers Vulkan via `pkexec` e criação de atalhos.
+  - Empacotamento **AppImage x86_64** (`scripts/package-linux-appimage.sh`) com Qt6, ICU, plugins X11/Wayland, `librexruntime.so`, `librexgpu-xenos.so`, `extract-xiso` e `shader_cache/` embutidos.
+
+---
+
+## [0.8.6-beta-hotfix-linux] — 2026-11-22
+
+Esta versão sincroniza o port nativo Linux com o upstream oficial até o commit `3ce28ec` (integrando `v0.8.5-beta`, `v0.8.6-beta`, `v0.8.6-beta-hotfix` e 4 correções pós-hotfix), preservando integralmente o Launcher Qt6 em PT-BR, scripts nativos Linux e blindagens de compilação.
+
+### 🚀 Destaques da Versão
+* **Texture Studio & Mod Loader (`src/renderer/mod_loader.*`, `tools/texture_studio/`)**:
+  - Carregamento nativo de mods de textura em tempo real no Dante Renderer e ferramenta completa para extração/edição de texturas (incluindo exportação de normal maps RGB padrão).
+* **Glifos Kenney's Input Prompts (`assets/glyphs/kenney/`, `src/renderer/button_glyphs.cpp`)**:
+  - 129 ícones PNG embutidos em tempo de compilação (`glyph_icons.cpp`) via `stb_image`, trazendo glifos nítidos de PlayStation e teclado/mouse nativamente no Linux sem depender de Win32/GDI.
+* **Ultrawide 16:9 Centralizado para Menus e HUD**:
+  - Menus e interface desenhados em área 16:9 centralizada em telas ultrawide.
+* **Quit to Desktop Integrado (`src/menu_hooks.*`)**:
+  - Opção nativa de sair para a área de trabalho adicionada diretamente ao menu principal e ao menu de pausa.
+* **Otimizações de Desempenho, VRAM e Estabilidade**:
+  - Sleep no GPU fence em vez de busy-spin (`81461c7`), redução de uso de CPU/VRAM em PCs mais modestos (`dff9962`), DynamicHeapSize Vulkan ampliado para 256 MB, sobrevivência a falhas de alocação de textura e descarte de views obsoletas (`c28e606`).
+  - Correção de animações desconectando layers cujo blend graph ficou ilegível (`src/animation_hooks.cpp`), `src/memory_hooks.cpp`, fallback para Vulkan e aviso claro para GPUs incompatíveis (`3ce28ec`).
+  - Diagnóstico aprimorado (`src/crash_log.h`, `src/renderer/thread_cpu.*`, `src/path_util.h`), teclas de dev protegidas atrás de `--dev_keys` e uso de configurações do launcher sem precisar abri-lo.
+* **Blindagens Linux & Experiência Plug-and-Play**:
+  - Patch unificado do ReXGlue SDK (`patches/sdk/rexglue-sdk-v0.10.0.patch`) atualizado com todas as mudanças upstream + manutenção das correções C++23 Clang (`__cpp_concepts`) e tolerância a entrypoints TU2.
+  - Guards `#ifdef _WIN32` preservados/aplicados em `CMakeLists.txt`, `src/renderer/button_glyphs.cpp`, `src/renderer/vulkan_device.cpp`, `src/user_paths.cpp` e `SeedShaderStorage()` em `src/dantes_inferno_app.h`.
+  - **Launcher Qt6 autocontido no pacote de release**: `scripts/package-linux-release.sh` agora empacota as bibliotecas runtime do Qt6, ICU e plugins X11/Wayland + `bin/qt.conf` (`RUNPATH=$ORIGIN:$ORIGIN/../lib`).
+  - **Nova aba `SISTEMA` no Launcher Qt6 (`launcher-linux/system_service.*`)**: diagnóstico em tempo real (distro, arquitetura, loader/ICD Vulkan e `extract-xiso`), **instalação 1-clique de drivers Vulkan via `pkexec`** e criação de atalhos (Área de Trabalho e Menu) direto pelo Launcher.
+  - **`launcher.sh` inteligente (sem Zenity desnecessário)**: abre o Launcher Qt6 diretamente quando todas as libs estão presentes, usando diálogo + `pkexec` apenas como fallback caso falte alguma biblioteca crítica (`--menu` mantém o menu clássico).
+
+---
+
+## [0.8.4-beta-linux] — 2026-10-16
+
+Esta versão integra todas as atualizações do upstream oficial (`v0.8.0-beta` até `v0.8.4-beta`), trazendo o **novo renderizador nativo Vulkan ("Dante Renderer")**, suporte a **taxas de quadros destravadas (60, 120, 180 e 240 FPS)**, **anti-aliasing SMAA**, **sombras em alta resolução**, **sistema de conquistas sonoro e visual**, **glifos dinâmicos de botões**, **correções de áudio XMA** e o **Lançador Qt6 100% traduzido para Português do Brasil (PT-BR)**, mantendo a compatibilidade 100% nativa com Linux (ELF / Vulkan Puro).
+
+### 🚀 Destaques da Versão
+* **Novo Renderizador Nativo Vulkan "Dante" (`--renderer=dante`)**: 
+  - Renderização direta in-process via DiligentCore, eliminando a sobrecarga de tradução da GPU Xenos do Xbox 360.
+  - Suporte a sombras nítidas de alta definição com escala configurável de 1x a 4x (`--dante_shadow_scale=1..4`).
+  - Pós-processamento anti-aliasing SMAA nativo sub-pixel (`--dante_smaa`), com embutimento de shaders em formato literal raw compatível com Clang 18.
+  - O modo legado "Xenos" foi mantido como rota de compatibilidade/fallback (`--renderer=xenos`).
+* **Taxas de Quadros Destravadas (60, 120, 180 e 240 FPS)**:
+  - Suporte a altas taxas de atualização de tela (`--video_mode_refresh_rate=120|180|240`), mantendo a lógica de física e a interface do usuário travadas a 60 Hz para estabilidade perfeita de gameplay.
+* **Sistema Integrado de Conquistas & Efeitos Sonoros**:
+  - Novo sistema de notificações visuais toast (`achievement_ui.cpp`) e áudio (`achievement_sound.cpp`) ao desbloquear conquistas.
+  - Novo overlay com métricas de desempenho e tempo de quadro.
+* **Lançador Nativo Qt6 100% em Português do Brasil (PT-BR)**:
+  - Todas as abas traduzidas: **JOGAR**, **GRÁFICOS**, **ÁUDIO** e **IDIOMA**.
+  - Tradução integral de opções gráficas, qualidade de sombras, resolução (720p Nativo, 1440p Quad HD, 2160p 4K), anti-aliasing, buffer de áudio e configurações regionais do console.
+  - Tradução completa dos diálogos de importação de ISO com barra de progresso, assistente de primeira inicialização e mensagens de diagnóstico.
+  - Ajuste no script [`scripts/run-linux.sh`](file:///home/vagnarok/hells-gate-recomp-main/scripts/run-linux.sh) permitindo executar `./scripts/run-linux.sh --launcher` a qualquer momento de forma independente.
+* **Blindagem Multiplataforma para Linux**:
+  - Isolamento de dependências Win32: `gdi32` condicionado a `if(WIN32)` no CMake e inclusões de `<windows.h>` isoladas com `#ifdef _WIN32` em `button_glyphs.cpp`, `renderdoc_capture.cpp` e `renderer_config.cpp`.
+  - Adaptação da inicialização de swapchain no `vulkan_device.cpp` para utilizar `Diligent::NativeWindow.WindowId` no Linux.
+  - Patch unificado do ReXGlue SDK (`patches/sdk/rexglue-sdk-v0.10.0.patch`) consolidando as correções de áudio XMA upstream com as correções locais de C++23 no Clang (`__cpp_concepts`) e tolerância a entrypoints do Title Update 2 (TU2).
+  - Adicionado suporte automatizado para clone e aplicação de patches do DiligentCore no [`scripts/setup-linux.sh`](file:///home/vagnarok/hells-gate-recomp-main/scripts/setup-linux.sh).
+
+---
+
 ## [0.7.2-beta-hotfix] — 2026-09-16
 
 Esta versão incorpora as atualizações do upstream oficial (`v0.7.0-beta`, `v0.7.1-beta` e `v0.7.2-beta-hotfix`), trazendo **cache persistente de shaders SPIR-V pré-aquecidos**, **correção cirúrgica de Ultrawide Hor+**, **sincronização de VSync com vblank** e novo HUD de monitoramento de desempenho.

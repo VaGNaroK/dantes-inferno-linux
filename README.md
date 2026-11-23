@@ -1,15 +1,15 @@
-# Dante's Inferno (PC Port) — Compilações e Informações Linux Nativo
+# Dante's Inferno (PC Port) — Edição Nativa Linux (AppImage x86_64)
 
-[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Steam%20Deck-orange.svg)]()
-[![Backend](https://img.shields.io/badge/Graphics-Vulkan%20Nativo-red.svg)]()
-[![Binary](https://img.shields.io/badge/Format-ELF%2064--bit-blue.svg)]()
+[![Platform](https://img.shields.io/badge/Platform-Linux%20x86__64%20%7C%20Steam%20Deck-orange.svg)]()
+[![Format](https://img.shields.io/badge/Format-AppImage%20%7C%20ELF%2064--bit-blue.svg)]()
+[![Backend](https://img.shields.io/badge/Renderer-Dante%20Vulkan%20%2B%20Xenos-red.svg)]()
 [![Recomp](https://img.shields.io/badge/Recompilation-ReXGlue%20v0.10.0-purple.svg)]()
-[![Launcher](https://img.shields.io/badge/Launcher-Qt6%20Nativo-brightgreen.svg)]()
-[![Release](https://img.shields.io/badge/Release-v0.7.2--beta--hotfix-blue.svg)]()
+[![Launcher](https://img.shields.io/badge/Launcher-Qt6%20PT--BR-brightgreen.svg)]()
+[![Release](https://img.shields.io/badge/Release-v0.9.0--beta--linux-blue.svg)](../../releases/tag/v0.9.0-beta-linux)
 
-Este repositório disponibiliza documentação, histórico de versões, manuais técnicos e informações sobre as compilações nativas de **Dante's Inferno** (Xbox 360) para Linux e Steam Deck via **Vulkan Nativo**, através de recompilação estática antecipada (*Ahead-Of-Time* - AOT).
+Este repositório centraliza as **releases prontas para jogar (AppImage x86_64)**, documentação, manual técnico e histórico de versões do port nativo de **Dante's Inferno** (Xbox 360) para Linux e Steam Deck, utilizando recompilação estática antecipada (*Ahead-Of-Time* — AOT) e **Vulkan Nativo**.
 
-> ⚡ **100% Nativo Linux**: Não necessita de Wine, Proton, emuladores ou prefixos Windows. O executável gerado é um binário ELF 64-bit nativo que roda diretamente sobre o driver Vulkan da sua GPU.
+> ⚡ **100% Nativo Linux (Plug-and-Play)**: Não necessita de Wine, Proton, emuladores ou prefixos Windows. O AppImage já embute o executável ELF 64-bit, o Launcher Qt6 em PT-BR, bibliotecas de runtime (`librexruntime.so`, `librexgpu-xenos.so`, Qt6, ICU, plugins X11/Wayland), `extract-xiso` e `shader_cache/`.
 
 ---
 
@@ -17,131 +17,94 @@ Este repositório disponibiliza documentação, histórico de versões, manuais 
 > ### ⚠️ AVISO LEGAL E SOBRE DIREITOS AUTORAIS (DISCLAIMER)
 >
 > 1. **ESTE REPOSITÓRIO NÃO CONTÉM O JOGO DANTE'S INFERNO.**
-> 2. Nenhum arquivo proprietário, textura, áudio, modelo 3D, vídeo (FMV) ou código original da Electronic Arts / Visceral Games está incluído neste repositório.
-> 3. O usuário **DEVE POSSUIR UMA CÓPIA ORIGINAL E LEGÍTIMA** do jogo *Dante's Inferno* para Xbox 360 (em formato de imagem ISO `.iso` ou arquivos contendo `default.xex`).
-> 4. O Launcher oficial e os utilitários de extração realizam o processamento dos arquivos do jogo **localmente no computador do usuário**. O compartilhamento de arquivos protegidos por direitos autorais não é apoiado nem tolerado.
+> 2. Nenhum arquivo proprietário, textura, áudio, modelo 3D, vídeo (FMV) ou código original da Electronic Arts / Visceral Games está incluído neste repositório ou nos pacotes de release.
+> 3. O usuário **DEVE POSSUIR UMA CÓPIA ORIGINAL E LEGÍTIMA** do jogo *Dante's Inferno* para Xbox 360 (em imagem `.iso` ou arquivos extraídos contendo `default.xex` + Title Update 2 `default.xexp`).
+> 4. O Launcher realiza a extração e preparação dos arquivos do jogo **localmente no computador do usuário**.
 
 ---
 
-## 📖 Sobre as Compilações e Arquitetura
+## 🚀 Como Jogar (AppImage — Recomendado)
 
-Este projeto é baseado no trabalho pioneiro de engenharia reversa do **[hells-gate-recomp](https://github.com/florinp93/dantes-inferno)** e no **[ReXGlue SDK](https://github.com/rexglue/rexglue-sdk)**.
+### Passo 1: Baixar o AppImage
+Baixe o arquivo mais recente na aba **[Releases](../../releases/latest)**:
+* `DantesInferno-Linux-v0.9.0-beta-linux-x86_64.AppImage`
 
-O objetivo deste repositório é documentar e centralizar informações sobre os pacotes compilados para que qualquer usuário de Linux ou Steam Deck possa desfrutar do jogo com desempenho máximo, sem precisar configurar ambientes complexos de desenvolvimento (Clang, Ninja, CMake ou SDKs).
-
-### Recursos da Edição Linux Nativa (v0.7.2-beta-hotfix):
-* **Zero Shader Stutter (Cache SPIR-V Vulkan Pré-Aquecido)**: Inclusão do pacote de shaders compilados (`shader_cache/`), semeados automaticamente no arranque em `SeedShaderStorage()`, eliminando travamentos de compilação gráfica durante a gameplay.
-* **Correção Definitiva de Proporção Ultrawide (21:9 Hor+)**: Gancho em `0x824D6B90` (`f0`) que intercepta o registrador antes do armazenamento da razão de aspecto na memória global do jogo, garantindo FOV, projeção e interface perfeitamente adaptados sem esticar.
-* **Pacing de VSync e Novo Overlay de FPS**: Apresentação sincronizada ao vblank do monitor e HUD redesenhado com cálculo por janela de 250ms e exibição da taxa do vblank em Hz.
-* **Suporte Nativo a Expansões (DLCs)**: Detecção e montagem automática de pacotes STFS na pasta `dlc/` durante a inicialização (`OnPostSetup`), integrando conteúdos adicionais como *Dark Forest*.
-* **Executável ELF 64-bit nativo puro** (`bin/dantes_inferno`), traduzido de PowerPC para C++23 e compilado com Clang e Ninja (`-march=x86-64-v2`).
-* **Renderização Vulkan Nativa** via `librexgpu-xenos.so`, garantindo alto framerate sem overhead de tradução.
-* **Launcher Moderno em C++23 e Qt6** (`bin/dantes_inferno_launcher`):
-  - Botão **Import ISO** com extração automática via `extract-xiso` em segundo plano com barra de progresso.
-  - Seleção de resolução interna (720p, 1080p, 1440p 2x, 4K UHD 3x).
-  - Suporte a monitores Ultrawide (21:9).
-  - Suporte nativo ao overlay **MangoHud**.
-  - Gerenciador de pastas de dados e saves.
-* **Ponto de Entrada Dedicado do Jogador (`launcher.sh` / `install.sh`)**:
-  - Menu interativo (Zenity ou Terminal CLI).
-  - Verificação de drivers Vulkan e bibliotecas de runtime.
-  - Criação de atalhos oficiais com ícone na **Área de Trabalho** (`xdg-user-dir DESKTOP`) e no **Menu de Aplicativos** sem duplicação de binários.
-* **Runner Direto (`run-linux.sh`)**:
-  - Auto-detecção inteligente dos arquivos do jogo (`default.xex`) na pasta atual ou a partir de `launcher.ini`.
-  - Suporte a `--dlc_source_path` para carregamento imediato de expansões.
-  - Herança automática das opções gráficas salvas no Launcher.
-* **Desinstalador Limpo e Seguro (`uninstall.sh`)**:
-  - Remove executáveis e atalhos do sistema sem apagar os arquivos extraídos do jogo (~7 GB) ou saves, salvo se expressamente confirmado pelo usuário.
-
----
-
-## 🚀 Como Usar o Pacote Distribuível (Para Jogadores)
-
-### Passo 1: Baixar a Versão Mais Recente
-Baixe o pacote pré-compilado na aba **[Releases](../../releases)**:
-* `DantesInferno-Linux-v0.7.2-beta-hotfix.tar.gz`
-
-Extraia o arquivo:
+### Passo 2: Dar permissão de execução e abrir
 ```bash
-tar -xzf DantesInferno-Linux-v0.7.2-beta-hotfix.tar.gz
-cd DantesInferno-Linux-v0.7.2-beta-hotfix
+chmod +x DantesInferno-Linux-v0.9.0-beta-linux-x86_64.AppImage
+./DantesInferno-Linux-v0.9.0-beta-linux-x86_64.AppImage
 ```
+*(Ou clique com o botão direito no arquivo → Propriedades → Permissões → "Permitir executar como programa" e dê duplo clique).*
+
+### Passo 3: Configurar pelo Launcher Qt6 (PT-BR)
+1. Na primeira execução, o Launcher abre **centralizado** e permite escolher a pasta de **Dados/Saves** e a pasta do **Jogo**.
+2. Clique em **Importar ISO** para extrair sua imagem `.iso` do Xbox 360 automaticamente (com barra de progresso), ou aponte para uma pasta que já contenha `default.xex` (e `default.xexp` do Title Update 2).
+3. Se precisar de drivers Vulkan ou quiser criar atalhos no sistema, acesse a aba **`SISTEMA`** (instalação 1-clique via `pkexec` e criação de atalhos na Área de Trabalho e Menu de Aplicativos).
+4. Ajuste suas preferências em **`GRÁFICOS`**, **`ÁUDIO`** e **`IDIOMA`**, salve e clique em **JOGAR**!
 
 ---
 
-### Passo 2: Executar o Assistente / Launcher
-Dê duplo clique em `launcher.sh` (ou `install.sh`) ou execute no terminal:
-```bash
-./launcher.sh
-```
+## ✨ Destaques da Versão `v0.9.0-beta-linux`
 
-O menu apresentará as seguintes opções:
-```text
-========================================
-       DANTE'S INFERNO - LINUX
-========================================
-1 - Configurar ambiente  (Verificar Vulkan e dependências de execução)
-2 - Preparar port nativo (Criar atalhos na Área de Trabalho e Menu)
-3 - Iniciar Launcher     (Abrir central do jogo para ISO, Saves e Jogar)
-4 - Sair
-```
+Baseado no projeto original **[florinp93/hells-gate-recomp](https://github.com/florinp93/hells-gate-recomp)** (sincronizado até o commit **`3ce28ec`**) com melhorias e correções dedicadas ao Linux:
 
-* **1 - Configurar ambiente:** Valida se a sua GPU e bibliotecas do sistema suportam Vulkan.
-* **2 - Preparar port nativo:** Instala o Launcher e cria os atalhos com ícone em alta definição na sua **Área de Trabalho** e no **Menu de Aplicativos**.
-* **3 - Iniciar Launcher:** Inicia o Launcher em Qt6.
+### 🎨 Gráficos e Desempenho
+* **Renderizador Nativo Vulkan "Dante" (`--renderer=dante`)**: 100% funcional no Linux (X11 e Wayland via SDL3) rodando a **60 FPS cravados**, com suporte a taxas de quadros destravadas (60/120/180/240 FPS), anti-aliasing **SMAA**, sombras em alta resolução (`1x`–`4x`) e resolução até **4K UHD**.
+* **V-Sync Estrito (`VK_PRESENT_MODE_FIFO_KHR`)**: elimina completamente o *screen tearing* quando "Sincronização vertical" está marcada no Launcher.
+* **Ultrawide 21:9 Hor+ com Menus/HUD em 16:9 Centralizado** e **Glifos Kenney's Input Prompts** (129 ícones embutidos para PlayStation, Xbox e Teclado/Mouse).
+* **Texture Studio & Mod Loader**: carregamento nativo de mods de textura em tempo real no Dante Renderer.
+* **Fallback Xenos (`--renderer=xenos`)**: mantido como alternativa selecionável na aba *Gráficos*.
 
----
+### 🔊 Áudio Limpo no Linux
+* **Zero picotes / estalos in-game**: priorização automática do driver SDL3 `pulseaudio,pipewire,alsa` (evitando *xruns* do callback RT do PipeWire em DACs/headsets USB sob carga 3D).
+* **Downmix Estéreo Nativo ITU-R BS.775**: detecção real dos canais físicos do dispositivo (2 canais) antes de abrir o stream, com suporte completo às opções do Launcher (*Forçar estéreo*, *Apenas canais frontais*, *Ganho de volume*, *Filtro passa-altas* e *de-clicker* suave).
 
-### Passo 3: Importar a ISO no Launcher e Jogar
-1. No **Dante's Inferno Launcher**, clique em **Import ISO**.
-2. Selecione a sua imagem ISO do Xbox 360 (`.iso`).
-3. O Launcher extrairá os arquivos necessários automaticamente e configurará as pastas.
-4. Ajuste suas preferências gráficas e clique em **PLAY** para jogar!
+### 🎮 Menu In-Game "Cheats" & Avanço Rápido Seguro
+* **Menu `Cheats` no Start (Pausa)** (ou tecla **`F4`**): painel overlay temático navegável por **controle, teclado e mouse** (com bloqueio total do menu de pausa por trás):
+  - **God Mode** (imortalidade + sem *knockback*)
+  - **One-Hit Kill** (morte instantânea em inimigos)
+  - **Damage Multiplier** (`1.0x` / `2.0x` / `4.0x`)
+  - **Game Speed** (`0.5x` / `1.0x` / `1.5x` / `2.0x`)
+  - **Hold L3/R3 to Skip**: segure o clique do analógico esquerdo (**`L3`**), direito (**`R3`**) ou **`Ctrl Direito`** durante qualquer cutscene ou vídeo (FMV) para avançar em **20x** com áudio mutado e **risco zero de *softlock***.
 
----
-
-## 🛠️ Para Desenvolvedores: Hub de Compilação
-
-Para quem compila a partir do código-fonte, o projeto disponibiliza o script de automação:
-
-```bash
-./installer/linux/install.sh
-```
-
-### Opções do Hub do Desenvolvedor:
-* `1 - Setup`: Verifica dependências, instala ferramentas do sistema e compila os utilitários do SDK (`rexglue` e `extract-xiso`).
-* `2 - Build`: Executa a tradução AOT (PowerPC -> C++23), aplica patches de fibras e compila os binários nativos ELF e o Launcher Qt6 em `out/build/linux-native/`.
-* `3 - Package`: Monta a estrutura e gera o pacote distribuível `.tar.gz`.
-* `4 - Clean`: Limpa o cache de compilação, objetos `.o`, código C++ gerado e logs, liberando ~1 GB de espaço em disco.
-* `5 - Exit`: Encerra o script.
-
----
-
-## 📚 Documentação Adicional
-
-* **[MANUAL_LINUX.md](MANUAL_LINUX.md)** — Guia completo de engenharia, arquitetura, compilação manual e solução de problemas.
-* **[CHANGELOG.md](CHANGELOG.md)** — Histórico completo de versões desde a `v0.3.2-alpha` até a `v0.5.0-alpha`.
+### 🖥️ Launcher Qt6 Nativo (100% em PT-BR)
+* 5 abas completas: **`JOGAR`**, **`GRÁFICOS`**, **`ÁUDIO`**, **`IDIOMA`** e **`SISTEMA`**.
+* **Aba `SISTEMA`**: diagnóstico em tempo real (distro, arquitetura, Vulkan ICD, `extract-xiso`), instalação 1-clique de drivers Vulkan via `pkexec` e criação de atalhos no Menu/Área de Trabalho.
+* **Quit to Desktop** integrado ao menu principal e de pausa do jogo, suporte automático a **DLCs** (pasta `dlc/`) e sistema de **Conquistas** com notificações visuais e sonoras.
 
 ---
 
 ## 🎮 Controles e Atalhos no Jogo
 
-* **F1:** Ativa / desativa o overlay nativo ImGui com contador de FPS e estatísticas de renderização.
-* **F2:** Ativa o avanço rápido (50x de velocidade sem limite de VSync) para acelerar vídeos e cutscenes. Pressione **F2** novamente para retornar à velocidade normal.
-* **Alt + F4:** Fecha o jogo imediatamente e retorna à área de trabalho.
-* **Controles:** Suporte nativo a controles de Xbox, PlayStation (DualShock 4 / DualSense) e controles genéricos via SDL3.
+| Atalho / Botão | Ação |
+| :--- | :--- |
+| **`Start` → `Cheats`** ou **`F4`** | Abre / fecha o menu in-game de **Cheats** |
+| **Segurar `L3` ou `R3`** *(ou `Ctrl Direito`)* | **Fast-Forward seguro (20x)** para acelerar cutscenes e FMVs (sem conflitar com `L3+R3` da Redemption) |
+| **`F1`** | Ativa / desativa o overlay de FPS e tempo de quadro |
+| **`F7`** | Abre / fecha a lista de **Conquistas** |
+| **`Alt + F4`** | Fecha o jogo imediatamente |
+| **Controles** | Xbox, PlayStation (DualShock 4 / DualSense) e genéricos nativamente via SDL3 + Teclado e Mouse |
+
+---
+
+## 📚 Documentação e Código-Fonte
+
+* **[MANUAL_LINUX.md](MANUAL_LINUX.md)** — Manual completo do Launcher Qt6, aba Sistema, Cheats, compilação manual e solução de problemas.
+* **[CHANGELOG.md](CHANGELOG.md)** — Histórico detalhado desde a `v0.5.0-alpha` até a `v0.9.0-beta-linux`.
+* **Código-Fonte do Port Linux:** [VaGNaroK/Dantes_Inferno_Linux_Port](https://github.com/VaGNaroK/Dantes_Inferno_Linux_Port)
 
 ---
 
 ## 🏆 Créditos e Reconhecimentos
 
-* **[hells-gate-recomp](https://github.com/florinp93/dantes-inferno)** — Por **florinp93** e todos os colaboradores do projeto original, pela engenharia reversa detalhada, correções do VMX, física e savegame.
-* **[ReXGlue SDK](https://github.com/rexglue/rexglue-sdk)** — Pelo recompiler estático PowerPC -> C++23.
-* **[XboxDev / extract-xiso](https://github.com/XboxDev/extract-xiso)** — Pela ferramenta open-source de extração de ISOs.
+* **[hells-gate-recomp](https://github.com/florinp93/hells-gate-recomp)** — Por **florinp93** e colaboradores do projeto original (base sincronizada até o commit `3ce28ec`).
+* **[ReXGlue SDK](https://github.com/rexglue/rexglue-sdk)** — Recompiler estático PowerPC → C++23.
+* **[DiligentCore](https://github.com/DiligentGraphics/DiligentCore)** — Engine Vulkan utilizada pelo Dante Renderer.
+* **[XboxDev / extract-xiso](https://github.com/XboxDev/extract-xiso)** — Extração open-source de ISOs de Xbox 360.
+* **[Kenney Input Prompts](https://kenney.nl/assets/input-prompts)** — Ícones de botões embutidos.
 
 ---
 
 ## 📄 Licença
-
-* Este repositório contém apenas documentação, guias de compilação e histórico do projeto.
-* Todos os direitos de propriedade intelectual, marcas e direitos autorais referentes a *Dante's Inferno* pertencem à **Electronic Arts Inc.** e **Visceral Games**.
+* Este repositório contém apenas documentação, guias e releases do port Linux.
+* Todos os direitos de propriedade intelectual referentes a *Dante's Inferno* pertencem à **Electronic Arts Inc.** e **Visceral Games**.
