@@ -17,7 +17,7 @@ Este manual cobre tanto o uso completo do **AppImage e do Launcher Qt6 (para jog
    * [2.6. Aba SISTEMA (Diagnóstico, Drivers Vulkan e Atalhos)](#26-aba-sistema-diagnóstico-drivers-vulkan-e-atalhos)
    * [2.7. Modo Portátil (`portable.txt`)](#27-modo-portátil-portabletxt)
 3. [Menu In-Game "Cheats" e Avanço Rápido de Cutscenes](#3-menu-in-game-cheats-e-avanço-rápido-de-cutscenes)
-4. [Guia do Desenvolvedor: Compilação Manual a partir do Código-Fonte](#4-guia-do-desenvolvedor-compilação-manual-a-partir-do-código-fonte)
+4. [Guia do Desenvolvedor: Compilação Manual](#4-guia-do-desenvolvedor-compilação-manual)
 5. [Resolução de Problemas e Dicas](#5-resolução-de-problemas-e-dicas)
 
 ---
@@ -123,9 +123,7 @@ Durante o gameplay, aperte **Start** e selecione **`Cheats`** (ou pressione **`F
 
 ---
 
-## 4. Guia do Desenvolvedor: Compilação Manual a partir do Código-Fonte
-
-Código-fonte completo do port Linux: **[VaGNaroK/Dantes_Inferno_Linux_Port](https://github.com/VaGNaroK/Dantes_Inferno_Linux_Port)**
+## 4. Guia do Desenvolvedor: Compilação Manual
 
 ### Pré-requisitos (Ubuntu / Debian / Linux Mint)
 ```bash
@@ -135,23 +133,19 @@ sudo apt install -y git cmake ninja-build clang python3 python3-pip curl tar \
                     qt6-base-dev libgl1-mesa-dev
 ```
 
-### Passo a passo
+### Passo a passo (na raiz do código-fonte)
 ```bash
-# 1. Clonar o repositório do código-fonte
-git clone https://github.com/VaGNaroK/Dantes_Inferno_Linux_Port.git
-cd Dantes_Inferno_Linux_Port
-
-# 2. Preparar SDK (ReXGlue v0.10.0 + patches), DiligentCore (+ patches) e ferramentas
+# 1. Preparar SDK (ReXGlue v0.10.0 + patches), DiligentCore (+ patches) e ferramentas
 ./scripts/setup-linux.sh
 
-# 3. Colocar seus arquivos extraídos em game/ (default.xex + default.xexp TU2)
+# 2. Colocar seus arquivos extraídos em game/ (default.xex + default.xexp TU2)
 #    (ou extrair da ISO com tools/bin/extract-xiso -x jogo.iso -d game/)
 
-# 4. Gerar código C++ AOT e aplicar patches de fibras/save
+# 3. Gerar código C++ AOT e aplicar patches de fibras/save
 thirdparty/rexglue-sdk/out/linux-amd64/rexglue codegen dantes_inferno_manifest.toml
 python3 patches/generated/apply_generated_patches.py
 
-# 5. Compilar jogo + Launcher Qt6 (Clang + Ninja)
+# 4. Compilar jogo + Launcher Qt6 (Clang + Ninja)
 cmake -S . -B out/build/linux-native -G Ninja \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_C_COMPILER=clang \
@@ -161,7 +155,7 @@ cmake -S . -B out/build/linux-native -G Ninja \
 cmake --build out/build/linux-native -j$(nproc)
 ctest --test-dir out/build/linux-native --output-on-failure
 
-# 6. Empacotar AppImage x86_64 (dist-release/)
+# 5. Empacotar AppImage x86_64 (dist-release/)
 ./scripts/package-linux-appimage.sh
 ```
 

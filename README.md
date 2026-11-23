@@ -87,11 +87,10 @@ Baseado no projeto original **[florinp93/hells-gate-recomp](https://github.com/f
 
 ---
 
-## 📚 Documentação e Código-Fonte
+## 📚 Documentação Adicional
 
 * **[MANUAL_LINUX.md](MANUAL_LINUX.md)** — Manual completo do Launcher Qt6, aba Sistema, Cheats, compilação manual e solução de problemas.
 * **[CHANGELOG.md](CHANGELOG.md)** — Histórico detalhado desde a `v0.5.0-alpha` até a `v0.9.0-beta-linux`.
-* **Código-Fonte do Port Linux:** [VaGNaroK/Dantes_Inferno_Linux_Port](https://github.com/VaGNaroK/Dantes_Inferno_Linux_Port)
 
 ---
 
